@@ -4,6 +4,9 @@ moodle-mod_etherpadlite
 Changes
 -------
 
+### v4.4.1
+* Tint monologo icon with dark grey as standard, resolves (#77)
+
 ### v4.4
 
 * 2024-07-10 -   Requires now Moodle 4.4
