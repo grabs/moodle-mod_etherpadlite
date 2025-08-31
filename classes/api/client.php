@@ -750,7 +750,9 @@ class client {
             if ($ips = gethostbynamel($url->get_host())) {
                 $ipstring = implode(', ', $ips);
             }
-
+            if (empty($ipstring)) {
+                return false;
+            }
             return $url->get_host() . '(' . $ipstring . ')';
         }
 

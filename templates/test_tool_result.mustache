@@ -23,31 +23,40 @@
     {
         "connection": {
             "success": true,
-            "info": ""
+            "info": "",
             "blocked": false,
-            "blockedinfo": ""
-            }
+            "blockedhostinfo": ""
         }
     }
+
 }}
 
 {{#connection}}
     {{#success}}
-        <p class="alert alert-success">
-            {{#str}} testconnectionsuccess, mod_etherpadlite {{/str}}
-        </p>
+        <div class="alert alert-success my-0 d-flex">
+            <i class="fa fa-check fa-lg icon text-success align-self-center"></i>
+            <div class="align-self-center">
+                {{#str}} testconnectionsuccess, mod_etherpadlite {{/str}}
+            </div>
+        </div>
     {{/success}}
     {{^success}}
-        <p class="alert alert-danger">
-            {{#str}} testconnectionfail, mod_etherpadlite {{/str}}
-            <code>
-                {{info}}
-            </code>
-        </p>
-        {{#blockedinfo}}
-            <p class="alert alert-warning">
-                {{.}}
-            </p>
-        {{/blockedinfo}}
+        <div class="alert alert-danger my-0 d-flex">
+            <i class="fa fa-times fa-lg icon text-danger align-self-center"></i>
+            <div class="align-self-center d-flex flex-column">
+                {{#str}} testconnectionfail, mod_etherpadlite {{/str}}
+                <code>
+                    {{info}}
+                </code>
+            </div>
+        </div>
     {{/success}}
+    {{#blockedhostinfo}}
+        <div class="alert alert-warning mb-0 mt-2 d-flex">
+            <i class="fa fa-info fa-lg icon text-warning align-self-center"></i>
+            <div class="align-self-center">
+                {{.}}
+            </div>
+        </div>
+    {{/blockedhostinfo}}
 {{/connection}}

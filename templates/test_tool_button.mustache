@@ -15,17 +15,19 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_etherpadlite/closebutton
+    @template mod_etherpadlite/test_tool_button
 
-    Displays etherpad content
+    Template for the test_tool button.
 
     Example context (json):
     {
-        "courseurl"     : "https://example.com/course/view.php?id=2"
+        "id": "mod-etherpadlite-test-tool-button",
+        "title": "Connection test"
     }
 
 }}
 
-<a href="{{{courseurl}}}" title="{{#str}} closebuttontitle {{/str}}" class="btn btn-icon bg-danger text-light d-block float-right">
-    <i class="fa fa-times fa-2x"></i>
-</a>
+<button id="{{id}}" class="btn btn-secondary disabled" disabled="disabled" data-action="mod-etherpadlite-test-tool" title="{{title}}">
+    <i class="fa fa-plug fa-fw"></i>
+    {{title}}
+</button>

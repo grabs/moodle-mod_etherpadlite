@@ -21,16 +21,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Modal from 'core/modal';
 import Notification from 'core/notification';
 import Templates from 'core/templates';
 import {call as fetchMany} from 'core/ajax';
 import {getString} from 'core/str';
 
 const SELECTORS = {
-    SETTING_ETHERPAD_URL: 'url',
-    SETTING_ETHERPAD_APIKEY: 'apikey',
-    TEST_TOOL_BUTTON: '[data-action="mod-etherpadlite-test-tool"]',
+    TEST_TOOL_BUTTON: '#mod-etherpadlite-test-tool-button',
 };
 
 /**
@@ -39,7 +36,7 @@ const SELECTORS = {
  * @method init
  */
 export const init = () => {
-    if (window.location.pathname === '/admin/settings.php') {
+    if (window.location.pathname === '/admin/settings.php' || window.location.pathname === '/admin/search.php') {
         registerListenerEvents();
     }
 };
@@ -75,32 +72,12 @@ const registerListenerEvents = () => {
 /**
  * Execute the tests via webservice.
  *
- * @param {string} url
- * @param {string} apikey
- *
  * @returns string The HTML of the test.
  */
-export const getTestResults = (url, apikey) => fetchMany([{
+export const getTestResults = () => fetchMany([{
     methodname: 'mod_etherpadlite_test_tool',
-    args: {
-        url: url,
-        apikey: apikey,
-    }
+    args: {}
 }])[0];
-
-/**
- * Get the value of a Moodle Admin setting on the current page.
- *
- * @param {string} setting
- *
- * @returns {string|integer} The settings Value
- */
-const getAdminSettingValue = (setting) => {
-    const settingElementId = 'admin-' + setting;
-    const settingElement = document.getElementById(settingElementId);
-    const input = settingElement.querySelector('input');
-    return input ? input.value : null;
-};
 
 /**
  * Build the modal with the provided data.
@@ -108,19 +85,11 @@ const getAdminSettingValue = (setting) => {
  * @method buildModal
  */
 const testConnection = async() => {
-    const url = getAdminSettingValue(SELECTORS.SETTING_ETHERPAD_URL);
-    const apikey = getAdminSettingValue(SELECTORS.SETTING_ETHERPAD_APIKEY);
+    let title = await getString('testmodaltitle', 'mod_etherpadlite');
+    let body;
 
-    const testResult = await getTestResults(url, apikey);
+    const testResult = await getTestResults();
 
-    const modal = await Modal.create({
-        title: getString('testmodaltitle', 'mod_etherpadlite'),
-        body: Templates.render('mod_etherpadlite/test_tool_result', testResult),
-        large: true,
-        isVerticallyCentered: true,
-        buttons: {
-            'cancel': getString('closebuttontitle', 'moodle'),
-        },
-    });
-    modal.show();
+    body = await Templates.render('mod_etherpadlite/test_tool_result', testResult);
+    Notification.alert(title, body);
 };

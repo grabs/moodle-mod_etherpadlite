@@ -29,44 +29,51 @@ use core_external\external_value;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class test_tool extends external_api {
-
     /**
      * Describes the parameters for mod_etherpadlite_test_tool
      *
      * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
-        return new external_function_parameters([
-            'url' => new external_value(PARAM_URL, 'The Etherpad Lite API URL'),
-            'apikey' => new external_value(PARAM_TEXT, 'The Etherpad Lite API Key'),
-        ]);
+        return new external_function_parameters([]);
     }
 
     /**
-     * Implementation of web service mod_etherpadlite_test_tool
+     * Executes the Etherpad Lite connection test.
      *
-     * @param string $url
-     * @param string $apikey
+     * This function performs the following tasks:
+     * 1. Verifies the context and user capabilities.
+     * 2. Retrieves the Etherpad Lite configuration.
+     * 3. Checks if the URL is set and not blocked.
+     * 4. Attempts to establish a connection to the Etherpad Lite server.
+     * 5. Prepares information about blocked hosts if applicable.
+     *
+     * @return array An associative array containing the connection test results.
      */
-    public static function execute($url, $apikey) {
-         // Parameter validation.
-         ['url' => $url, 'apikey' => $apikey] = self::validate_parameters(
-            self::execute_parameters(),
-            ['url' => $url, 'apikey' => $apikey]
-        );
-
+    public static function execute() {
         // Verify context and capability.
         $context = \context_system::instance();
         self::validate_context($context);
 
         \require_admin();
 
-        // Is the current host blocked?
-        $blockedhost    = \mod_etherpadlite\api\client::is_url_blocked($url);
-        $ignoresecurity = !empty(get_config('mod_etherpadlite', 'ignoresecurity'));
+        $mycfg = get_config('etherpadlite');
+        $url = $mycfg->url ?? '';
+        $apikey = $mycfg->apikey ?? '';
 
         $connected = false;
         $infotext  = '';
+        $blockedhostinfo = '';
+
+        // Do not run the test if the URL is not set.
+        if (empty($url)) {
+            $infotext = get_string('urlnotset', 'mod_etherpadlite');
+            return static::get_result($connected, $infotext, $blockedhostinfo);
+        }
+
+        // Is the current host blocked?
+        $blockedhost    = \mod_etherpadlite\api\client::is_url_blocked($url);
+        $ignoresecurity = !empty(get_config('etherpadlite', 'ignoresecurity'));
 
         if (!$blockedhost || $ignoresecurity) {
             // Try to establish a connection.
@@ -84,19 +91,9 @@ class test_tool extends external_api {
             $blockedhostinfo = $ignoresecurity
                 ? get_string('urlisblocked_but_ignored', 'etherpadlite', $blockedhost)
                 : get_string('urlisblocked', 'etherpadlite', $blockedhost);
-        } else {
-            $blockedhostinfo = '';
         }
 
-        $result = [
-            'connection' => [
-                'success'     => $connected,
-                'info'        => $infotext ?? '',
-                'blockedinfo' => $blockedhostinfo,
-            ],
-        ];
-
-        return $result;
+        return static::get_result($connected, $infotext, $blockedhostinfo);
     }
 
     /**
@@ -107,10 +104,29 @@ class test_tool extends external_api {
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'connection' => new external_single_structure([
-                'success'     => new external_value(PARAM_BOOL, 'The connection result'),
-                'info'        => new external_value(PARAM_RAW, 'Any warning or info message from the connection'),
-                'blockedinfo' => new external_value(PARAM_RAW, 'Any warning or info message from the blocked check'),
+                'success'         => new external_value(PARAM_BOOL, 'The connection result'),
+                'info'            => new external_value(PARAM_RAW, 'Any warning or info message from the connection'),
+                'blockedhostinfo' => new external_value(PARAM_RAW, 'Any warning or info message from the blocked check'),
             ]),
         ]);
+    }
+
+    /**
+     * Prepares and returns the result of the connection test.
+     *
+     * @param bool   $connected       The result of the connection test. True if successful, false otherwise.
+     * @param string $info            Any warning or info message from the connection.
+     * @param string $blockedhostinfo Any warning or info message from the blocked check.
+     *
+     * @return array An associative array containing the connection result.
+     */
+    protected static function get_result(bool $connected, string $info, string $blockedhostinfo): array {
+        return [
+            'connection' => [
+                'success'          => $connected,
+                'info'            => $info,
+                'blockedhostinfo' => $blockedhostinfo,
+            ],
+        ];
     }
 }
