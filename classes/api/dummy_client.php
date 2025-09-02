@@ -151,10 +151,12 @@ class dummy_client extends client {
      *
      * @param  string $padid
      * @param  string $rev
-     * @return string
+     * @return \stdClass
      */
     public function get_text($padid, $rev = null) {
-        return html_to_text($this->get_html($padid, $rev));
+        return (object) [
+            'text' => html_to_text($this->get_html($padid, $rev)->html),
+        ];
     }
 
     /**
@@ -162,10 +164,12 @@ class dummy_client extends client {
      *
      * @param  string $padid
      * @param  string $rev
-     * @return string
+     * @return \stdClass
      */
     public function get_html($padid, $rev = null) {
-        return '<div>something <b>formatted</b></div>';
+        return (object) [
+            'html' => '<div>something <b>formatted</b></div>',
+        ];
     }
 
     /**
