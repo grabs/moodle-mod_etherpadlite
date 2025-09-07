@@ -4,6 +4,10 @@ moodle-mod_etherpadlite
 Changes
 -------
 
+### v4.3.3
+* Fix unchecked check_ssl option not being honored by Ilja Rozhko
+* Fix unittest mod_etherpadlite
+
 ### v4.3.2
 
 * 2024-07-10 -   Optimize github actions
