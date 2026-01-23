@@ -36,14 +36,14 @@ class test_tool_button implements \renderable, \templatable {
      * @param \stdClass $mycfg Configuration object, expected to potentially contain a 'url' property.
      */
     public function __construct(\stdClass $mycfg) {
-        global $PAGE;
+        global $PAGE, $CFG;
         $this->data = [
             'id' => 'mod-etherpadlite-test-tool-button',
             'title' => get_string('connectiontest', 'etherpadlite'),
         ];
 
         if (!empty($mycfg->url)) {
-            $PAGE->requires->js_call_amd('mod_etherpadlite/test_tool', 'init');
+            $PAGE->requires->js_call_amd('mod_etherpadlite/test_tool', 'init', [$CFG->wwwroot]);
         }
     }
 

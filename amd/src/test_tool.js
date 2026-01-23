@@ -34,9 +34,11 @@ const SELECTORS = {
  * Entrypoint of the JS.
  *
  * @method init
+ * @param {string} wwwroot The Moodle wwwroot URL
  */
-export const init = () => {
-    if (window.location.pathname === '/admin/settings.php' || window.location.pathname === '/admin/search.php') {
+export const init = (wwwroot) => {
+    let actualpath = window.location.origin + window.location.pathname;
+    if (actualpath === wwwroot + '/admin/settings.php' || actualpath === wwwroot + '/admin/search.php') {
         registerListenerEvents();
     }
 };
