@@ -91,13 +91,13 @@ final class lib_test extends \advanced_testcase {
         $cmnew               = get_coursemodule_from_instance('etherpadlite', $etherpadlitenew->id);
 
         $course                           = $cm = $etherpadlite = null;
-        list($course, $cm, $etherpadlite) = \mod_etherpadlite\util::get_coursemodule($cmnew->id, 0);
+        [$course, $cm, $etherpadlite] = \mod_etherpadlite\util::get_coursemodule($cmnew->id, 0);
         $this->assertIsObject($course);
         $this->assertIsObject($cm);
         $this->assertIsObject($etherpadlite);
 
         $course                           = $cm = $etherpadlite = null;
-        list($course, $cm, $etherpadlite) = \mod_etherpadlite\util::get_coursemodule(0, $etherpadlitenew->id);
+        [$course, $cm, $etherpadlite] = \mod_etherpadlite\util::get_coursemodule(0, $etherpadlitenew->id);
         $this->assertIsObject($course);
         $this->assertIsObject($cm);
         $this->assertIsObject($etherpadlite);

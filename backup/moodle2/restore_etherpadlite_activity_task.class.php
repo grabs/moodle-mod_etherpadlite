@@ -100,8 +100,15 @@ class restore_etherpadlite_activity_task extends restore_activity_task {
         $rules = [];
 
         // Fix old wrong uses (missing extension).
-        $rules[] = new restore_log_rule('etherpadlite', 'view all', 'index?id={course}', null,
-            null, null, 'index.php?id={course}');
+        $rules[] = new restore_log_rule(
+            'etherpadlite',
+            'view all',
+            'index?id={course}',
+            null,
+            null,
+            null,
+            'index.php?id={course}'
+        );
         $rules[] = new restore_log_rule('etherpadlite', 'view all', 'index.php?id={course}', null);
 
         return $rules;

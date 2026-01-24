@@ -224,7 +224,6 @@ function etherpadlite_user_complete($course, $user, $mod, $etherpadlite) {
  * @param  bool      $isteacher
  * @param  int       $timestart
  * @return bool
- * @todo Finish documenting this function
  */
 function etherpadlite_print_recent_activity($course, $isteacher, $timestart) {
     return false;  // True if anything was printed, otherwise false.
@@ -236,7 +235,6 @@ function etherpadlite_print_recent_activity($course, $isteacher, $timestart) {
  * as sending out mail, toggling flags etc ...
  *
  * @return bool
- * @todo Finish documenting this function
  **/
 function etherpadlite_cron() {
     return true;

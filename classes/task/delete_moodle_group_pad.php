@@ -43,7 +43,7 @@ class delete_moodle_group_pad extends \core\task\adhoc_task {
         $data     = $this->get_custom_data();
         $etherpad = $DB->get_record('etherpadlite', ['id' => $data->etherpadliteid]);
         try {
-            list($course, $cm) = get_course_and_cm_from_instance($data->etherpadliteid, 'etherpadlite');
+            [$course, $cm] = get_course_and_cm_from_instance($data->etherpadliteid, 'etherpadlite');
             if ($cm->groupmode == 1 || $cm->groupmode == 2) {
                 $mgroups = groups_get_all_groups($etherpad->course, 0, $cm->groupingid);
                 if (in_array($data->mgroupid, array_keys($mgroups))) {

@@ -67,9 +67,9 @@ class mod_etherpadlite_mod_form extends moodleform_mod {
         $config = get_config('etherpadlite');
 
         try {
-            $client = \mod_etherpadlite\api\client::get_instance($config->apikey, $config->url);
-        } catch (\mod_etherpadlite\api\api_exception $e) {
-            \core\notification::add($e->getMessage(), \core\notification::ERROR);
+            $client = mod_etherpadlite\api\client::get_instance($config->apikey, $config->url);
+        } catch (mod_etherpadlite\api\api_exception $e) {
+            core\notification::add($e->getMessage(), core\notification::ERROR);
             $url = course_get_url($COURSE->id);
             redirect($url);
         }
@@ -97,11 +97,20 @@ class mod_etherpadlite_mod_form extends moodleform_mod {
         }
 
         $mform->addElement('header', 'availabilityhdr', get_string('availability'));
-        $mform->addElement('date_time_selector', 'timeopen', get_string('activityopen', 'etherpadlite'),
-            ['optional' => true]);
+        $mform->addElement(
+            'date_time_selector',
+            'timeopen',
+            get_string('activityopen', 'etherpadlite'),
+            ['optional' => true]
+        );
         $mform->addHelpButton('timeopen', 'activityopenclose', 'etherpadlite');
-        $mform->addElement('date_time_selector', 'timeclose', get_string('activityclose', 'etherpadlite'),
-            ['optional' => true]);
+
+        $mform->addElement(
+            'date_time_selector',
+            'timeclose',
+            get_string('activityclose', 'etherpadlite'),
+            ['optional' => true]
+        );
 
         $this->standard_coursemodule_elements();
 

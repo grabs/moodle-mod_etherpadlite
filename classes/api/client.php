@@ -21,11 +21,11 @@ namespace mod_etherpadlite\api;
  *
  * @package    mod_etherpadlite
  *
- * @author     Timo Welde <tjwelde@gmail.com>
- * @author     Andreas Grabs <moodle@grabs-edv.de>
+ * @author    Timo Welde <tjwelde@gmail.com>
+ * @author    Andreas Grabs <moodle@grabs-edv.de>
  * @see       https://github.com/TomNomNom/etherpad-lite-client
- * @copyright  Tomnomnom <mail@tomnomnom.com>
- * @license    Apache License
+ * @copyright Tomnomnom <mail@tomnomnom.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class client {
     /** The default api version if none is set in configuration */

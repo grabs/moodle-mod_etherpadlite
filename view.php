@@ -30,7 +30,7 @@ require_once(__DIR__ . '/lib.php');
 $id = optional_param('id', 0, PARAM_INT); // The course_module id.
 $a  = optional_param('a', 0, PARAM_INT);  // The etherpadlite instance id.
 
-list($course, $cm, $etherpadlite) = \mod_etherpadlite\util::get_coursemodule($id, $a);
+[$course, $cm, $etherpadlite] = mod_etherpadlite\util::get_coursemodule($id, $a);
 
 $context = context_module::instance($cm->id);
 
@@ -56,7 +56,7 @@ if ($config->ssl) {
 $padid = $etherpadlite->uri;
 
 // Make a new intance from the etherpadlite client. It might throw an exception.
-$client = \mod_etherpadlite\api\client::get_instance($config->apikey, $config->url);
+$client = mod_etherpadlite\api\client::get_instance($config->apikey, $config->url);
 
 // Get group mode.
 $groupmode      = groups_get_activity_groupmode($cm);
@@ -87,7 +87,7 @@ $grouprestricted = !$isgroupmember && !$canaddinstance;
 // Fullurl generation depending on the restrictions.
 if ($guestrestricted || $grouprestricted || $timerestricted) {
     if (!$readonlyid = $client->get_readonly_id($urlpadid)) {
-        throw new \moodle_exception('could not get readonly id');
+        throw new moodle_exception('could not get readonly id');
     }
     $fullurl = $client->get_baseurl() . '/p/' . $readonlyid;
 } else {
@@ -105,12 +105,12 @@ if ((isguestuser() && etherpadlite_guestsallowed($etherpadlite)) || !$isgroupmem
     $authorid = $client->create_author_if_not_exists_for($USER->id, fullname($USER));
 }
 if (!$authorid) {
-    throw new \moodle_exception('could not create etherpad author');
+    throw new moodle_exception('could not create etherpad author');
 }
 
 // Create a browser session to the etherpad lite server.
 if (!$client->create_session($epgroupid, $authorid)) {
-    throw new \moodle_exception('could not create etherpad session');
+    throw new moodle_exception('could not create etherpad session');
 }
 
 // END of Etherpad Lite init.
@@ -119,7 +119,7 @@ $eventparams = [
     'context'  => $context,
     'objectid' => $etherpadlite->id,
 ];
-$event = \mod_etherpadlite\event\course_module_viewed::create($eventparams);
+$event = mod_etherpadlite\event\course_module_viewed::create($eventparams);
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('etherpadlite', $etherpadlite);
@@ -130,7 +130,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
 // Add the keepalive system to keep checking for a connection.
-\core\session\manager::keepalive();
+core\session\manager::keepalive();
 
 $renderer = $PAGE->get_renderer('mod_etherpadlite');
 
@@ -138,15 +138,13 @@ $renderer = $PAGE->get_renderer('mod_etherpadlite');
 echo $renderer->header();
 
 require_once($CFG->libdir . '/grouplib.php');
-$groupselecturl = new moodle_url($CFG->wwwroot . '/mod/etherpadlite/view.php',
-    ['id' => $cm->id,
-    ]);
+$groupselecturl = new moodle_url($CFG->wwwroot . '/mod/etherpadlite/view.php', ['id' => $cm->id]);
 
 groups_print_activity_menu($cm, $groupselecturl);
 
 // Print the etherpad content.
-if (\mod_etherpadlite\api\client::is_testing()) {
-    $fullurl = new \moodle_url('/mod/etherpadlite/tests/fixtures/dummyoutput.html');
+if (mod_etherpadlite\api\client::is_testing()) {
+    $fullurl = new moodle_url('/mod/etherpadlite/tests/fixtures/dummyoutput.html');
 }
 echo $renderer->render_etherpad($etherpadlite, $cm, $fullurl);
 

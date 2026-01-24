@@ -154,8 +154,12 @@ class group {
                   LEFT JOIN {etherpadlite} e ON e.id  = mg.padid
                   LEFT JOIN {course_modules} cm ON e.id  = cm.instance
                  WHERE e.course = :courseid AND mg.groupid = :groupid AND cm.groupingid = :groupingid';
-        $records = $DB->get_records_sql($sql,
-            ['courseid' => $event->courseid, 'groupid' => $other['groupid'], 'groupingid' => $event->objectid]);
+        $records = $DB->get_records_sql(
+            $sql,
+            ['courseid' => $event->courseid,
+            'groupid' => $other['groupid'],
+            'groupingid' => $event->objectid]
+        );
         $nextruntime = self::get_next_runtime($config->deletemgrouppad);
         foreach ($records as $record) {
             self::delete_mgroup_pad_adhoc_task($record->uri, $record->id, $record, $nextruntime);
@@ -194,8 +198,12 @@ class group {
                     $nextruntime = self::get_next_runtime($config->deletemgrouppad);
                     if ($nextruntime) {
                         foreach ($mgrouppads as $mgrouppad) {
-                            self::delete_mgroup_pad_adhoc_task($etherpadlite->uri,
-                                $etherpadlite->id, $mgrouppad, $nextruntime);
+                            self::delete_mgroup_pad_adhoc_task(
+                                $etherpadlite->uri,
+                                $etherpadlite->id,
+                                $mgrouppad,
+                                $nextruntime
+                            );
                         }
                     }
                 }
